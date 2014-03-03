@@ -119,6 +119,11 @@ void keyPressed() {
         notes[0].start();
         break;
       case '9':
+        // Repeated notes in sequences
+        sequences[3] = new RiriSequence();
+        sequences[3].addNote(channel1, 60, 127, beatsToMils(1), 3);
+        sequences[3].addNote(channel1, 64, 127, beatsToMils(1));
+        sequences[3].start();
         break;
       case 'q':
         // Control the pitch wheel

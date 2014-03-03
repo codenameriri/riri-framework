@@ -72,6 +72,18 @@ public class RiriSequence extends Thread {
   public void addNote(int channel, int pitch, int velocity, int duration) {
     notes.add(new RiriNote(channel, pitch, velocity, duration)); 
   }
+
+  /*
+  * addNote() - Add a note
+  * @param int channel - channel the note should play on
+  * @param int pitch - pitch of the note
+  * @param int velocity - velocity of the note 
+  * @param int duration - duration of the note (in milliseconds)
+  * @param int repeats - number of times to repeat the note)
+  */
+  public void addNote(int channel, int pitch, int velocity, int duration, int repeats) {
+    notes.add(new RiriNote(channel, pitch, velocity, duration, repeats)); 
+  }
   
   /*
   * addRest() - Add a note with no pitch/velocity
@@ -99,15 +111,17 @@ public class RiriSequence extends Thread {
     while(running && counter < notes.size()) {
       // Grab and play the current note in the sequence
       RiriNote currentNote = notes.get(counter);
-      currentNote.noteOn();
-      // Sleep for the duration of the note
-      try {
-        sleep((long) currentNote.duration());
-      } catch (Exception e) {
-        println("iunno...");
+      for (int i = 0; i < currentNote.repeats; i++) {
+        currentNote.noteOn();
+        // Sleep for the duration of the note
+        try {
+          sleep((long) currentNote.duration());
+        } catch (Exception e) {
+          println("iunno...");
+        }
+        // Stop the current note and increment the counter
+        currentNote.noteOff();
       }
-      // Stop the current note and increment the counter
-      currentNote.noteOff();
       counter++;
     }
     // If we're out of notes, stop executing
