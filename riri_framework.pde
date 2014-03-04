@@ -12,6 +12,7 @@ boolean keyDown = false;
 // Arduino
 Arduino arduino;
 String ARDUINO_PORT = "COM3";
+//String ARDUINO_PORT = "/dev/tty.usbmodem411";
 int potPin = 2;
 float potVal = 0;
 
@@ -27,6 +28,7 @@ int channel4 = 3;
 // Riri Stuff
 RiriNote[] notes = new RiriNote[10];
 RiriSequence[] sequences = new RiriSequence[10];
+RiriMessage[] messages = new RiriMessage[10];
 
 void setup() {
   // Setup Arduino
@@ -93,7 +95,12 @@ void keyPressed() {
         sequences[1].addNote(channel2, 64, 127, beatsToMils(.5));
         sequences[1].addNote(channel2, 62, 127, beatsToMils(.5));
         sequences[1].addNote(channel2, 67, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 64, 127, beatsToMils(2));
+        sequences[1].addNote(channel2, 64, 127, beatsToMils(1));
+        RiriChord chord = new RiriChord();
+        chord.addNote(channel2, 60, 100, beatsToMils(2));
+        chord.addNote(channel2, 64, 100, beatsToMils(1), 2);
+        chord.addNote(channel2, 67, 100, beatsToMils(1), 3);
+        sequences[1].addChord(chord);
         sequences[1].start();
         break;
       case '6':
@@ -107,25 +114,60 @@ void keyPressed() {
         sequences[2].addNote(channel1, 67, 127, beatsToMils(2));
         break;
       case '7':
+        // Play a repeating note
+        notes[0] = new RiriNote(channel1, 60, 127, beatsToMils(1), 5);
+        notes[0].start();
+        break;
+      case '8':
+        // Repeat a note infinitely
+        notes[0] = new RiriNote(channel1, 60, 127, beatsToMils(1), true);
+        notes[0].start();
+        break;
+      case '9':
+        // Repeated notes in sequences
+        sequences[3] = new RiriSequence();
+        sequences[3].addNote(channel1, 60, 127, beatsToMils(1), 3);
+        sequences[3].addNote(channel1, 64, 127, beatsToMils(1));
+        sequences[3].start();
+        break;
+      case 'q':
         // Control the pitch wheel
+        // WORKS IN GARAGEBAND AND ABLETON
         notes[0] = new RiriNote(channel1, 72, 127);
         notes[0].noteOn();
         RiriMessage msg1 = new RiriMessage(RiriMessageType.PITCH_WHEEL, channel1, 0, 0);
         msg1.send();
         break;
-      case '8':
+      case 'w':
         // Control a channel's volume
+        // WORKS IN GARAGEBAND, NOT ABLETON
         notes[0] = new RiriNote(channel1, 72, 127);
         notes[0].noteOn();
         RiriMessage msg = new RiriMessage(RiriMessageType.VOLUME, channel1, 0, -1);
         msg.send();
         break;
-      case '9':
+      case 'e':
         // Pan a channel
+        // WORKS IN GARAGEBAND, NOT ABLETON
         notes[0] = new RiriNote(channel1, 72, 127);
         notes[0].noteOn();
         RiriMessage msg2 = new RiriMessage(RiriMessageType.PAN, channel1, 127, -1);
         msg2.send();
+        break;
+      case 'r':
+        // Play a chord with notes of same duration
+        RiriChord chord1 = new RiriChord();
+        chord1.addNote(channel1, 60, 100, beatsToMils(1));
+        chord1.addNote(channel1, 64, 100, beatsToMils(1));
+        chord1.addNote(channel1, 67, 100, beatsToMils(1));
+        chord1.start();
+        break;
+      case 't':
+        RiriChord chord2 = new RiriChord();
+        chord2.addNote(channel2, 60, 100, beatsToMils(2));
+        chord2.addNote(channel2, 64, 100, beatsToMils(1), 2);
+        chord2.addNote(channel2, 67, 100, beatsToMils(1), 3);
+        chord2.start();
         break;
       default:
         
@@ -153,19 +195,27 @@ void keyReleased() {
     case '6':
       break;
     case '7':
-      notes[0].noteOff();
-      RiriMessage msg1 = new RiriMessage(RiriMessageType.PITCH_WHEEL, channel1, 64, 0);
-      msg1.send();
+      notes[0].quit();
       break;
     case '8':
-      notes[0].noteOff();
-      RiriMessage msg = new RiriMessage(RiriMessageType.VOLUME, channel1, 100, -1);
-      msg.send();
+      notes[0].quit();
       break;
     case '9':
+      break;
+    case 'q':
+      RiriMessage msg1 = new RiriMessage(RiriMessageType.PITCH_WHEEL, channel1, 0, 64);
+      msg1.send();
       notes[0].noteOff();
+      break;
+    case 'w':
+      RiriMessage msg = new RiriMessage(RiriMessageType.VOLUME, channel1, 100, -1);
+      msg.send();
+      notes[0].noteOff();
+      break;
+    case 'e':
       RiriMessage msg2 = new RiriMessage(RiriMessageType.PAN, channel1, 64, -1);
       msg2.send(); 
+      notes[0].noteOff();
       break;
     default:
       

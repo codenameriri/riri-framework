@@ -4,7 +4,7 @@
 *	Encapsulates values and operations for playing a MIDI note
 */
 
-public class RiriNote extends Thread {
+public class RiriNote extends RiriObject {
 	
   /*
   *	Instance Variables
@@ -13,23 +13,16 @@ public class RiriNote extends Thread {
   // GLOBALS
   // MidiBus mb; // Created in main sketch
 
-  // Thread stuff
-  private boolean running;
-  
-  // Am I currently playing?
-  protected boolean playing = false;
-
   // MIDI note properties
   protected int channel = 0;
   protected int pitch = 0;
   protected int velocity = 0;
-  protected int duration = 0;
   
   /*
   *	Default Constructor	
   */
   public RiriNote() {
-  	running = false;
+
   }
   
   /*
@@ -43,7 +36,8 @@ public class RiriNote extends Thread {
     channel = aChannel;
     pitch = aPitch;
     velocity = aVelocity;
-    running = false;
+    duration = 0;
+    repeats = 1;
   }
   
   /*
@@ -59,14 +53,48 @@ public class RiriNote extends Thread {
     pitch = aPitch;
     velocity = aVelocity;
     duration = aDuration;
-    running = false;
+    repeats = 1;
+  }
+
+  /*
+  * Constructor
+  * @param int aChannel = the channel the note should be played on (0-15)
+  * @param int aPitch = the pitch of the note (0-127)
+  * @param int aVelocity = the velocity of the note (0-127)
+  * @param int aDuration = the duration of the note (in milliseconds)
+  * @params int aRepeats = the number of times to repeat the note
+  */
+  public RiriNote(int aChannel, int aPitch, int aVelocity, int aDuration, int aRepeats) {
+    // Set instance vars
+    channel = aChannel;
+    pitch = aPitch;
+    velocity = aVelocity;
+    duration = aDuration;
+    repeats = aRepeats;
+  }
+
+  /*
+  * Constructor
+  * @param int aChannel = the channel the note should be played on (0-15)
+  * @param int aPitch = the pitch of the note (0-127)
+  * @param int aVelocity = the velocity of the note (0-127)
+  * @param int aDuration = the duration of the note (in milliseconds)
+  * @params boolean aInfinite = repeat the note indefinitely
+  */
+  public RiriNote(int aChannel, int aPitch, int aVelocity, int aDuration, boolean aInfinite) {
+    // Set instance vars
+    channel = aChannel;
+    pitch = aPitch;
+    velocity = aVelocity;
+    duration = aDuration;
+    repeats = 1;
+    infinite = true;
   }
 
   /*
   * start() - Start executing the thread
   */
   public void start() {
-    running = true;
     super.start();
   }
 
@@ -74,7 +102,7 @@ public class RiriNote extends Thread {
   * run() - Thread execution function
   */
   public void run() {
-    while (running) {
+    while (running && counter < repeats) {
       // Send a noteOn message
       noteOn();
       // Sleep for the note's duration
@@ -85,16 +113,20 @@ public class RiriNote extends Thread {
       }
       // Send a note off event and quit executing
       noteOff();
-      running = false;
+      if (!infinite) {
+        counter++;
+      }
     }
+    running = false;
+    counter = 0;
   }
 
   /*
   * quit() - Stop executing the thread
   */
   public void quit() {
-    running = false;
     noteOff();
+    super.quit();
   }
 
   /*
@@ -153,18 +185,6 @@ public class RiriNote extends Thread {
   
   public void velocity(int v) {
     velocity = v;
-  }
-  
-  public int duration() {
-    return duration;
-  }
-  
-  public void duration(int d) {
-    duration = d;
-  }
-  
-  public boolean playing() {
-    return playing; 
   }
 
 }
