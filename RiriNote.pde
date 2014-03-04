@@ -25,7 +25,6 @@ public class RiriNote extends Thread {
   protected int pitch = 0;
   protected int velocity = 0;
   
-
   // RiriNote properties
   protected int duration = 0;
   protected int repeats = 1;
@@ -71,7 +70,6 @@ public class RiriNote extends Thread {
     pitch = aPitch;
     velocity = aVelocity;
     duration = aDuration;
-    duration = 0;
     repeats = 1;
     // Set thread vars
     counter = 0;

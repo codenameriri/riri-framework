@@ -127,6 +127,7 @@ void keyPressed() {
         break;
       case 'q':
         // Control the pitch wheel
+        // WORKS IN GARAGEBAND AND ABLETON
         notes[0] = new RiriNote(channel1, 72, 127);
         notes[0].noteOn();
         RiriMessage msg1 = new RiriMessage(RiriMessageType.PITCH_WHEEL, channel1, 0, 0);
@@ -134,6 +135,7 @@ void keyPressed() {
         break;
       case 'w':
         // Control a channel's volume
+        // WORKS IN GARAGEBAND, NOT ABLETON
         notes[0] = new RiriNote(channel1, 72, 127);
         notes[0].noteOn();
         RiriMessage msg = new RiriMessage(RiriMessageType.VOLUME, channel1, 0, -1);
@@ -141,10 +143,19 @@ void keyPressed() {
         break;
       case 'e':
         // Pan a channel
+        // WORKS IN GARAGEBAND, NOT ABLETON
         notes[0] = new RiriNote(channel1, 72, 127);
         notes[0].noteOn();
         RiriMessage msg2 = new RiriMessage(RiriMessageType.PAN, channel1, 127, -1);
         msg2.send();
+        break;
+      case 'r':
+        // Play a chord with notes of same duration
+        RiriChord chord1 = new RiriChord();
+        chord1.addNote(channel1, 60, 100, beatsToMils(2));
+        chord1.addNote(channel1, 64, 100, beatsToMils(1));
+        chord1.addNote(channel1, 67, 100, beatsToMils(1));
+        chord1.start();
         break;
       default:
         
