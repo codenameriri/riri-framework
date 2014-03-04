@@ -95,7 +95,12 @@ void keyPressed() {
         sequences[1].addNote(channel2, 64, 127, beatsToMils(.5));
         sequences[1].addNote(channel2, 62, 127, beatsToMils(.5));
         sequences[1].addNote(channel2, 67, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 64, 127, beatsToMils(2));
+        sequences[1].addNote(channel2, 64, 127, beatsToMils(1));
+        RiriChord chord = new RiriChord();
+        chord.addNote(channel2, 60, 100, beatsToMils(2));
+        chord.addNote(channel2, 64, 100, beatsToMils(1), 2);
+        chord.addNote(channel2, 67, 100, beatsToMils(1), 3);
+        sequences[1].addChord(chord);
         sequences[1].start();
         break;
       case '6':
@@ -152,10 +157,17 @@ void keyPressed() {
       case 'r':
         // Play a chord with notes of same duration
         RiriChord chord1 = new RiriChord();
-        chord1.addNote(channel1, 60, 100, beatsToMils(2));
+        chord1.addNote(channel1, 60, 100, beatsToMils(1));
         chord1.addNote(channel1, 64, 100, beatsToMils(1));
         chord1.addNote(channel1, 67, 100, beatsToMils(1));
         chord1.start();
+        break;
+      case 't':
+        RiriChord chord2 = new RiriChord();
+        chord2.addNote(channel2, 60, 100, beatsToMils(2));
+        chord2.addNote(channel2, 64, 100, beatsToMils(1), 2);
+        chord2.addNote(channel2, 67, 100, beatsToMils(1), 3);
+        chord2.start();
         break;
       default:
         

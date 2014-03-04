@@ -4,7 +4,7 @@
 *	Encapsulates values and operations for playing a MIDI note
 */
 
-public class RiriNote extends Thread {
+public class RiriNote extends RiriObject {
 	
   /*
   *	Instance Variables
@@ -13,30 +13,16 @@ public class RiriNote extends Thread {
   // GLOBALS
   // MidiBus mb; // Created in main sketch
 
-  // Thread stuff
-  private boolean running;
-  private int counter;
-  
-  // Am I currently playing?
-  protected boolean playing = false;
-
   // MIDI note properties
   protected int channel = 0;
   protected int pitch = 0;
   protected int velocity = 0;
   
-  // RiriNote properties
-  protected int duration = 0;
-  protected int repeats = 1;
-  protected boolean infinite = false;
-  
   /*
   *	Default Constructor	
   */
   public RiriNote() {
-  	// Set thread vars
-    counter = 0;
-    running = false;
+
   }
   
   /*
@@ -52,9 +38,6 @@ public class RiriNote extends Thread {
     velocity = aVelocity;
     duration = 0;
     repeats = 1;
-    // Set thread vars
-    counter = 0;
-    running = false;
   }
   
   /*
@@ -71,9 +54,6 @@ public class RiriNote extends Thread {
     velocity = aVelocity;
     duration = aDuration;
     repeats = 1;
-    // Set thread vars
-    counter = 0;
-    running = false;
   }
 
   /*
@@ -91,9 +71,6 @@ public class RiriNote extends Thread {
     velocity = aVelocity;
     duration = aDuration;
     repeats = aRepeats;
-    // Set thread vars
-    counter = 0;
-    running = false;
   }
 
   /*
@@ -112,17 +89,12 @@ public class RiriNote extends Thread {
     duration = aDuration;
     repeats = 1;
     infinite = true;
-    // Set thread vars
-    counter = 0;
-    running = false;
   }
 
   /*
   * start() - Start executing the thread
   */
   public void start() {
-    running = true;
-    counter = 0;
     super.start();
   }
 
@@ -153,9 +125,8 @@ public class RiriNote extends Thread {
   * quit() - Stop executing the thread
   */
   public void quit() {
-    running = false;
-    counter = 0;
     noteOff();
+    super.quit();
   }
 
   /*
@@ -214,34 +185,6 @@ public class RiriNote extends Thread {
   
   public void velocity(int v) {
     velocity = v;
-  }
-  
-  public int duration() {
-    return duration;
-  }
-  
-  public void duration(int d) {
-    duration = d;
-  }
-
-  public int repeats() {
-    return repeats;
-  }
-
-  public void repeats(int r) {
-    repeats = r;
-  }
-
-  public boolean infinite() {
-    return infinite;
-  }
-
-  public void infinite(boolean i) {
-    infinite = i;
-  }
-  
-  public boolean playing() {
-    return playing; 
   }
 
 }

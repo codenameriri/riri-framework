@@ -4,22 +4,14 @@
 *	Encapsulates values and operations for playing several simultaneous MIDI notes
 */
 
-public class RiriChord extends Thread {
+public class RiriChord extends RiriObject {
 
   /*
   *	Instance Variables
   */
 
-  // Thread stuff
-  private boolean running;
-  private int counter;
-
   // Notes in the chord
   ArrayList<RiriNote> notes = null;
-
-  // Chord properties
-  protected int duration = 0; 
-  protected int repeats = 1;
 
   /*
   * Default Constructor
@@ -34,8 +26,7 @@ public class RiriChord extends Thread {
   * start() - Start executing the thread
   */
   public void start() {
-    running = true;
-    counter = 0;
+  	setChordDuration();
     super.start();
   }
 
@@ -56,9 +47,9 @@ public class RiriChord extends Thread {
         println("iunno...");
       }
       // Stop the notes in the chord
-      for (int i = 0; i < notes.size(); i++) {
+      /*for (int i = 0; i < notes.size(); i++) {
       	//notes.get(i).noteOff();
-      }
+      }*/
       counter++;
     }
     running = false;
@@ -69,8 +60,7 @@ public class RiriChord extends Thread {
   * quit() - Stop executing the thread
   */
   public void quit() {
-    running = false;
-    counter = 0;
+    super.quit();
   }
 
   /*
@@ -80,7 +70,6 @@ public class RiriChord extends Thread {
   public void addNote(RiriNote note) {
   	note.infinite(false);
     notes.add(note);
-    setChordDuration();
   }
   
   /*
@@ -92,7 +81,6 @@ public class RiriChord extends Thread {
   */
   public void addNote(int channel, int pitch, int velocity, int duration) {
     notes.add(new RiriNote(channel, pitch, velocity, duration)); 
-    setChordDuration();
   }
 
   /*
@@ -113,7 +101,7 @@ public class RiriChord extends Thread {
   private void setChordDuration() {
   	int longest = 0;
   	for (int i = 0; i < notes.size(); i++) {
-  		int current = notes.get(i).duration();// * notes.get(i).repeats();
+  		int current = notes.get(i).duration() * notes.get(i).repeats();
   		if (current > longest) {
   			longest = current;
   		}
