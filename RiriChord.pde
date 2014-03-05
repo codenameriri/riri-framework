@@ -10,8 +10,14 @@ public class RiriChord extends RiriObject {
   *	Instance Variables
   */
 
+  // GLOBALS
+  // MidiBus mb; // Created in main sketch
+
   // Notes in the chord
   ArrayList<RiriNote> notes = null;
+
+  // Playing (for manual starting/stopping)
+  private boolean playing = false;
 
   /*
   * Default Constructor
@@ -96,16 +102,50 @@ public class RiriChord extends RiriObject {
   }
 
   /*
+  * allOn() - Start playing the chord
+  */
+  public void chordOn() {
+    if (!playing) {
+      for (int i = 0; i < notes.size(); i++) {
+        RiriNote current = notes.get(i);
+        current.noteOn();
+      }
+      playing = true;
+    }
+    else {
+      println("Chord not played, already playing!");
+    }
+  }
+
+  /*
+  * allOff() - Stop playing the chord
+  */
+  public void chordOff() {
+    if (playing) {
+      for (int i = 0; i < notes.size(); i++) {
+        RiriNote current = notes.get(i);
+        current.noteOff();
+      }
+      playing = false;
+    }
+    else {
+      println("Chord not stopped, already stopped!");
+    }
+  }
+
+  /*
   * setChordDuration() - Determine the duration of the chord
   */
   private void setChordDuration() {
   	int longest = 0;
+    // Find the longest note duration (considering repeats)
   	for (int i = 0; i < notes.size(); i++) {
   		int current = notes.get(i).duration() * notes.get(i).repeats();
   		if (current > longest) {
   			longest = current;
   		}
   	}
+    // Set the chord's duration to the duration of the longest note
   	duration = longest;
   }
 }

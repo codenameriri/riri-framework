@@ -29,6 +29,7 @@ int channel4 = 3;
 RiriNote[] notes = new RiriNote[10];
 RiriSequence[] sequences = new RiriSequence[10];
 RiriMessage[] messages = new RiriMessage[10];
+RiriChord[] chords = new RiriChord[10];
 
 void setup() {
   // Setup Arduino
@@ -169,6 +170,13 @@ void keyPressed() {
         chord2.addNote(channel2, 67, 100, beatsToMils(1), 3);
         chord2.start();
         break;
+      case 'y':
+        chords[0] = new RiriChord();
+        chords[0].addNote(channel1, 60, 100, beatsToMils(1));
+        chords[0].addNote(channel1, 64, 100, beatsToMils(1));
+        chords[0].addNote(channel1, 67, 100, beatsToMils(1));
+        chords[0].chordOn();
+        break;
       default:
         
     } 
@@ -216,6 +224,13 @@ void keyReleased() {
       RiriMessage msg2 = new RiriMessage(RiriMessageType.PAN, channel1, 64, -1);
       msg2.send(); 
       notes[0].noteOff();
+      break;
+    case 'r':
+      break;
+    case 't':
+      break;
+    case 'y':
+      chords[0].chordOff();
       break;
     default:
       
