@@ -17,6 +17,7 @@ public class RiriSequence extends RiriObject {
   *	Default Constructor
   */
   public RiriSequence() {
+    super();
     notes = new ArrayList<RiriObject>();
   }
 
@@ -25,6 +26,7 @@ public class RiriSequence extends RiriObject {
   * @param ArrayList<RiriNote> aNotes - List of RiriNotes to start with
   */
   public RiriSequence(ArrayList<RiriObject> aNotes) {
+    super();
     notes = aNotes;
   }
   
@@ -34,6 +36,7 @@ public class RiriSequence extends RiriObject {
   * @param int aInterval - Interval between all notes in the sequence 	
   */
   public RiriSequence(ArrayList<RiriObject> aNotes, int aInterval) {
+    super();
     notes = aNotes;
     for (int i = 0; i < notes.size(); i++) {
       notes.get(i).duration(aInterval);
@@ -69,6 +72,7 @@ public class RiriSequence extends RiriObject {
     // If we're out of notes, stop executing
     running = false;
     counter = 0;
+    println("Done");
   }
 
   /*

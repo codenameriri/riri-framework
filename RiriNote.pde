@@ -32,6 +32,7 @@ public class RiriNote extends RiriObject {
   *	@param int aVelocity = the velocity of the note (0-127)
   */
   public RiriNote(int aChannel, int aPitch, int aVelocity) {
+    super();
     // Set instance vars
     channel = aChannel;
     pitch = aPitch;
@@ -48,6 +49,7 @@ public class RiriNote extends RiriObject {
   *	@param int aDuration = the duration of the note (in milliseconds)
   */
   public RiriNote(int aChannel, int aPitch, int aVelocity, int aDuration) {
+    super();
     // Set instance vars
     channel = aChannel;
     pitch = aPitch;
@@ -65,6 +67,7 @@ public class RiriNote extends RiriObject {
   * @params int aRepeats = the number of times to repeat the note
   */
   public RiriNote(int aChannel, int aPitch, int aVelocity, int aDuration, int aRepeats) {
+    super();
     // Set instance vars
     channel = aChannel;
     pitch = aPitch;
@@ -82,6 +85,7 @@ public class RiriNote extends RiriObject {
   * @params boolean aInfinite = repeat the note indefinitely
   */
   public RiriNote(int aChannel, int aPitch, int aVelocity, int aDuration, boolean aInfinite) {
+    super();
     // Set instance vars
     channel = aChannel;
     pitch = aPitch;
@@ -95,6 +99,7 @@ public class RiriNote extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
+    //println("In Note: "+duration());
     super.start();
   }
 
@@ -185,6 +190,16 @@ public class RiriNote extends RiriObject {
   
   public void velocity(int v) {
     velocity = v;
+  }
+
+  public String toString() {
+    String str = "\nRiriNote:";
+    str += "\n=========";
+    str += "\nChannel: " + channel();
+    str += "\nPitch: " + pitch();
+    str += "\nVelocity: " + velocity();
+    str += "\nDuration: " + duration();
+    return str;
   }
 
 }

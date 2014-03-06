@@ -23,6 +23,7 @@ public class RiriChord extends RiriObject {
   * Default Constructor
   */
   public RiriChord() {
+    super();
   	notes = new ArrayList<RiriNote>();
     running = false;
     counter = 0;
@@ -32,7 +33,6 @@ public class RiriChord extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
-  	setChordDuration();
     super.start();
   }
 
@@ -76,6 +76,7 @@ public class RiriChord extends RiriObject {
   public void addNote(RiriNote note) {
   	note.infinite(false);
     notes.add(note);
+    setChordDuration();
   }
   
   /*
@@ -87,6 +88,7 @@ public class RiriChord extends RiriObject {
   */
   public void addNote(int channel, int pitch, int velocity, int duration) {
     notes.add(new RiriNote(channel, pitch, velocity, duration)); 
+    setChordDuration();
   }
 
   /*
@@ -99,6 +101,7 @@ public class RiriChord extends RiriObject {
   */
   public void addNote(int channel, int pitch, int velocity, int duration, int repeats) {
     notes.add(new RiriNote(channel, pitch, velocity, duration, repeats)); 
+    setChordDuration();
   }
 
   /*
@@ -136,7 +139,7 @@ public class RiriChord extends RiriObject {
   /*
   * setChordDuration() - Determine the duration of the chord
   */
-  private void setChordDuration() {
+  public void setChordDuration() {
   	int longest = 0;
     // Find the longest note duration (considering repeats)
   	for (int i = 0; i < notes.size(); i++) {
@@ -146,6 +149,18 @@ public class RiriChord extends RiriObject {
   		}
   	}
     // Set the chord's duration to the duration of the longest note
-  	duration = longest;
+  	duration(longest);
+  }
+
+  public String toString() {
+    String str = "\nRiriChord:";
+    str += "\n==========";
+    str += "\nDuration: " + duration();
+    str += "\nRepeats: " + repeats();
+    str += "\nNotes:";
+    for (int i = 0; i < notes.size(); i++) {
+      str += notes.get(i).toString();
+    }
+    return str;
   }
 }

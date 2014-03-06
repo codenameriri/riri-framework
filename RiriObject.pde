@@ -95,4 +95,8 @@ public class RiriObject extends Thread {
   	return this.getClass().getSimpleName();
   }
 
+  public String toString() {
+    return "";
+  }
+
 }
