@@ -99,8 +99,9 @@ public class RiriNote extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
-    //println("In Note: "+duration());
-    super.start();
+    if (!running) {
+      super.start();
+    }
   }
 
   /*

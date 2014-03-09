@@ -33,7 +33,9 @@ public class RiriChord extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
-    super.start();
+    if (!running) {
+      super.start();
+    }
   }
 
   /*

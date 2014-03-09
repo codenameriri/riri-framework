@@ -4,7 +4,10 @@ import org.firmata.*;
 import cc.arduino.*;
 
 // Timekeeping
-int BPM = 120;
+int BPM = 80;
+int lastTime = 0;
+int pastTime = 0;
+int beatCount  = 1;
 
 // Key press
 boolean keyDown = false;
@@ -19,11 +22,12 @@ float potVal = 0;
 // MidiBus
 MidiBus mb;
 String MIDI_PORT_OUT = "Virtual MIDI Bus";
-int pitch = 0;
 int channel1 = 0;
 int channel2 = 1;
 int channel3 = 2;
 int channel4 = 3;
+int velocity = 0;
+int pitch = 0;
 
 // Riri Stuff
 RiriNote[] notes = new RiriNote[10];
@@ -32,6 +36,8 @@ RiriMessage[] messages = new RiriMessage[10];
 RiriChord[] chords = new RiriChord[10];
 
 void setup() {
+  size(400,400);
+  stroke(255,255,255);
   // Setup Arduino
   //println(Arduino.list());
   //arduino = new Arduino(this, ARDUINO_PORT, 57600);
@@ -39,7 +45,85 @@ void setup() {
   MidiBus.list();
   mb = new MidiBus(this, -1, MIDI_PORT_OUT);
   mb.sendTimestamps();
-  // Prepare some music
+
+  lastTime = millis();
+}
+
+void draw() {
+  pastTime = millis() - lastTime;
+  // Draw something
+  background(0,0,0);
+  line(0, mouseY, 400, mouseY);
+  line(mouseX, 0, mouseX, 400);
+  // Change the sound
+  velocity = 100 - (int) (mouseY / 4);
+  pitch = (int) (mouseX / 8) + 50;
+  // Beat Counter
+  if (pastTime > beatsToMils(1)) {
+    // Measure Counter
+    if (beatCount == 1) {
+      // Mark the measure
+      fill(125, 125, 125);
+      ellipse(mouseX, mouseY, 100, 100);
+      // Play something
+      createSequence(0, channel2, pitch, velocity);
+    }
+    // Mark the beat
+    fill(250, 250, 250);
+    ellipse(mouseX, mouseY, 50, 50);
+    // Play something
+    RiriNote note = new RiriNote(channel1, pitch, velocity, beatsToMils(1));
+    note.start();
+    // Update lastTime
+    lastTime = millis();
+    // Update beatCount
+    beatCount++;
+    if (beatCount > 4) {
+      beatCount = 1;
+    }
+  }
+}
+
+void createSequence(int num, int channel, int startPitch, int startVel) {
+  sequences[num] = new RiriSequence();
+  sequences[num].addNote(channel, startPitch, startVel, beatsToMils(.5));
+  sequences[num].addNote(channel, startPitch + 7, startVel, beatsToMils(.25));
+  sequences[num].addNote(channel, startPitch + 4, startVel, beatsToMils(.25));
+  sequences[num].start();
+}
+
+int beatsToMils(float beats){
+  // (one second split into single beats) * # needed
+  float convertedNumber = (60000 / BPM) * beats;
+  return (int) convertedNumber;
+}
+
+void keyPressed() {
+  if (!keyDown) {
+    switch (key) {
+      case ' ':
+        playOdeToJoy();
+        break;
+      default: 
+        break;
+    }
+  }
+}
+
+void keyReleased() {
+  if (keyDown) {
+    switch (key) {
+      case '1':
+
+        break;
+      default: 
+        break;
+    }
+  }
+}
+
+void prepareOdeToJoy() {
+    // Prepare some music
   sequences[0] = new RiriSequence();
   sequences[1] = new RiriSequence();
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
@@ -81,6 +165,7 @@ void setup() {
   chords[0].addNote(2, 62, 100, beatsToMils(4));
   sequences[1].addChord(chords[0]);
 
+  //
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 65, 100, beatsToMils(1));
@@ -120,7 +205,7 @@ void setup() {
   chords[0].addNote(2, 62, 100, beatsToMils(2));
   sequences[1].addChord(chords[0]);
   chords[1] = new RiriChord();
-  chords[1].addNote(2, 28, 100, beatsToMils(2));
+  chords[1].addNote(2, 48, 100, beatsToMils(2));
   chords[1].addNote(2, 52, 100, beatsToMils(2));
   chords[1].addNote(2, 55, 100, beatsToMils(2));
   sequences[1].addChord(chords[1]);
@@ -129,53 +214,114 @@ void setup() {
   sequences[0].addNote(1, 62, 100, beatsToMils(1));
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 60, 100, beatsToMils(1));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 55, 100, beatsToMils(2));
+  chords[0].addNote(2, 59, 100, beatsToMils(2));
+  chords[0].addNote(2, 62, 100, beatsToMils(2));
+  sequences[1].addChord(chords[0]);
+  chords[1] = new RiriChord();
+  chords[1].addNote(2, 48, 100, beatsToMils(2));
+  chords[1].addNote(2, 52, 100, beatsToMils(2));
+  chords[1].addNote(2, 55, 100, beatsToMils(2));
+  sequences[1].addChord(chords[1]);
   
   sequences[0].addNote(1, 62, 100, beatsToMils(1));
   sequences[0].addNote(1, 64, 100, beatsToMils(.5));
   sequences[0].addNote(1, 65, 100, beatsToMils(.5));
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 60, 100, beatsToMils(1));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 55, 100, beatsToMils(2));
+  chords[0].addNote(2, 59, 100, beatsToMils(2));
+  chords[0].addNote(2, 62, 100, beatsToMils(2));
+  sequences[1].addChord(chords[0]);
+  chords[1] = new RiriChord();
+  chords[1].addNote(2, 48, 100, beatsToMils(2));
+  chords[1].addNote(2, 52, 100, beatsToMils(2));
+  chords[1].addNote(2, 55, 100, beatsToMils(2));
+  sequences[1].addChord(chords[1]);
 
   sequences[0].addNote(1, 62, 100, beatsToMils(1));
   sequences[0].addNote(1, 64, 100, beatsToMils(.5));
   sequences[0].addNote(1, 65, 100, beatsToMils(.5));
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 62, 100, beatsToMils(1));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 55, 100, beatsToMils(2));
+  chords[0].addNote(2, 59, 100, beatsToMils(2));
+  chords[0].addNote(2, 62, 100, beatsToMils(2));
+  sequences[1].addChord(chords[0]);
+  chords[1] = new RiriChord();
+  chords[1].addNote(2, 48, 100, beatsToMils(2));
+  chords[1].addNote(2, 52, 100, beatsToMils(2));
+  chords[1].addNote(2, 55, 100, beatsToMils(2));
+  sequences[1].addChord(chords[1]);
 
   sequences[0].addNote(1, 60, 100, beatsToMils(1));
   sequences[0].addNote(1, 62, 100, beatsToMils(1));
   sequences[0].addNote(1, 67, 100, beatsToMils(2));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 48, 100, beatsToMils(2));
+  chords[0].addNote(2, 52, 100, beatsToMils(2));
+  chords[0].addNote(2, 55, 100, beatsToMils(2));
+  sequences[1].addChord(chords[0]);
+  chords[1] = new RiriChord();
+  chords[1].addNote(2, 55, 100, beatsToMils(2));
+  chords[1].addNote(2, 59, 100, beatsToMils(2));
+  chords[1].addNote(2, 62, 100, beatsToMils(2));
+  sequences[1].addChord(chords[1]);
 
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 65, 100, beatsToMils(1));
   sequences[0].addNote(1, 67, 100, beatsToMils(1));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 48, 100, beatsToMils(4));
+  chords[0].addNote(2, 52, 100, beatsToMils(4));
+  chords[0].addNote(2, 55, 100, beatsToMils(4));
+  sequences[1].addChord(chords[0]);
   
   sequences[0].addNote(1, 67, 100, beatsToMils(1));
   sequences[0].addNote(1, 65, 100, beatsToMils(1));
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
   sequences[0].addNote(1, 62, 100, beatsToMils(1));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 55, 100, beatsToMils(4));
+  chords[0].addNote(2, 59, 100, beatsToMils(4));
+  chords[0].addNote(2, 62, 100, beatsToMils(4));
+  sequences[1].addChord(chords[0]);
 
   sequences[0].addNote(1, 60, 100, beatsToMils(1));
   sequences[0].addNote(1, 60, 100, beatsToMils(1));
   sequences[0].addNote(1, 62, 100, beatsToMils(1));
   sequences[0].addNote(1, 64, 100, beatsToMils(1));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 48, 100, beatsToMils(4));
+  chords[0].addNote(2, 52, 100, beatsToMils(4));
+  chords[0].addNote(2, 55, 100, beatsToMils(4));
+  sequences[1].addChord(chords[0]);
 
   sequences[0].addNote(1, 62, 100, beatsToMils(1.5));
   sequences[0].addNote(1, 60, 100, beatsToMils(.5));
   sequences[0].addNote(1, 60, 100, beatsToMils(2));
+  chords[0] = new RiriChord();
+  chords[0].addNote(2, 55, 100, beatsToMils(2));
+  chords[0].addNote(2, 59, 100, beatsToMils(2));
+  chords[0].addNote(2, 62, 100, beatsToMils(2));
+  sequences[1].addChord(chords[0]);
+  chords[1] = new RiriChord();
+  chords[1].addNote(2, 48, 100, beatsToMils(2));
+  chords[1].addNote(2, 52, 100, beatsToMils(2));
+  chords[1].addNote(2, 55, 100, beatsToMils(2));
+  sequences[1].addChord(chords[1]);
 }
 
-void draw() {
-  
+void playOdeToJoy() {
+  sequences[0].start();
+  sequences[1].start();
 }
 
-int beatsToMils(float beats){
-  // (one second split into single beats) * # needed
-  float convertedNumber = (60000 / BPM) * beats;
-  return (int) convertedNumber;
-}
-
+/*
 void keyPressed() {
   if (!keyDown) {
     switch (key) {
@@ -215,49 +361,49 @@ void keyPressed() {
         sequences[0].start();
         break;
       case '5':
-        // Play a sequence using beatsToMils for time
+        // Play a sequence using RiriObject.beatsToMils for time
         sequences[1] = new RiriSequence();
-        sequences[1].addNote(channel2, 72, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 71, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 69, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 67, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 65, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 64, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 62, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 67, 127, beatsToMils(.5));
-        sequences[1].addNote(channel2, 64, 127, beatsToMils(1));
+        sequences[1].addNote(channel2, 72, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 71, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 69, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 67, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 65, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 64, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 62, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 67, 127, RiriObject.beatsToMils(.5));
+        sequences[1].addNote(channel2, 64, 127, RiriObject.beatsToMils(1));
         RiriChord chord = new RiriChord();
-        chord.addNote(channel2, 60, 100, beatsToMils(2));
-        chord.addNote(channel2, 64, 100, beatsToMils(1), 2);
-        chord.addNote(channel2, 67, 100, beatsToMils(1), 3);
+        chord.addNote(channel2, 60, 100, RiriObject.beatsToMils(2));
+        chord.addNote(channel2, 64, 100, RiriObject.beatsToMils(1), 2);
+        chord.addNote(channel2, 67, 100, RiriObject.beatsToMils(1), 3);
         sequences[1].addChord(chord);
         sequences[1].start();
         break;
       case '6':
         // Add notes to a sequence while it's going
         sequences[2] = new RiriSequence();
-        sequences[2].addNote(channel1, 60, 127, beatsToMils(2));
+        sequences[2].addNote(channel1, 60, 127, RiriObject.beatsToMils(2));
         sequences[2].start();
-        delay(beatsToMils(1)); // you can add more notes as the sequence plays
-        //delay(beatsToMils(3)); // if the sequence stops, you'll have to start it again 
-        sequences[2].addNote(channel1, 72, 127, beatsToMils(2));
-        sequences[2].addNote(channel1, 67, 127, beatsToMils(2));
+        delay(RiriObject.beatsToMils(1)); // you can add more notes as the sequence plays
+        //delay(RiriObject.beatsToMils(3)); // if the sequence stops, you'll have to start it again 
+        sequences[2].addNote(channel1, 72, 127, RiriObject.beatsToMils(2));
+        sequences[2].addNote(channel1, 67, 127, RiriObject.beatsToMils(2));
         break;
       case '7':
         // Play a repeating note
-        notes[0] = new RiriNote(channel1, 60, 127, beatsToMils(1), 5);
+        notes[0] = new RiriNote(channel1, 60, 127, RiriObject.beatsToMils(1), 5);
         notes[0].start();
         break;
       case '8':
         // Repeat a note infinitely
-        notes[0] = new RiriNote(channel1, 60, 127, beatsToMils(1), true);
+        notes[0] = new RiriNote(channel1, 60, 127, RiriObject.beatsToMils(1), true);
         notes[0].start();
         break;
       case '9':
         // Repeated notes in sequences
         sequences[3] = new RiriSequence();
-        sequences[3].addNote(channel1, 60, 127, beatsToMils(1), 3);
-        sequences[3].addNote(channel1, 64, 127, beatsToMils(1));
+        sequences[3].addNote(channel1, 60, 127, RiriObject.beatsToMils(1), 3);
+        sequences[3].addNote(channel1, 64, 127, RiriObject.beatsToMils(1));
         sequences[3].start();
         break;
       case 'q':
@@ -287,23 +433,23 @@ void keyPressed() {
       case 'r':
         // Play a chord with notes of same duration
         RiriChord chord1 = new RiriChord();
-        chord1.addNote(channel1, 60, 100, beatsToMils(1));
-        chord1.addNote(channel1, 64, 100, beatsToMils(1));
-        chord1.addNote(channel1, 67, 100, beatsToMils(1));
+        chord1.addNote(channel1, 60, 100, RiriObject.beatsToMils(1));
+        chord1.addNote(channel1, 64, 100, RiriObject.beatsToMils(1));
+        chord1.addNote(channel1, 67, 100, RiriObject.beatsToMils(1));
         chord1.start();
         break;
       case 't':
         RiriChord chord2 = new RiriChord();
-        chord2.addNote(channel2, 60, 100, beatsToMils(2));
-        chord2.addNote(channel2, 64, 100, beatsToMils(1), 2);
-        chord2.addNote(channel2, 67, 100, beatsToMils(1), 3);
+        chord2.addNote(channel2, 60, 100, RiriObject.beatsToMils(2));
+        chord2.addNote(channel2, 64, 100, RiriObject.beatsToMils(1), 2);
+        chord2.addNote(channel2, 67, 100, RiriObject.beatsToMils(1), 3);
         chord2.start();
         break;
       case 'y':
         chords[0] = new RiriChord();
-        chords[0].addNote(channel1, 60, 100, beatsToMils(1));
-        chords[0].addNote(channel1, 64, 100, beatsToMils(1));
-        chords[0].addNote(channel1, 67, 100, beatsToMils(1));
+        chords[0].addNote(channel1, 60, 100, RiriObject.beatsToMils(1));
+        chords[0].addNote(channel1, 64, 100, RiriObject.beatsToMils(1));
+        chords[0].addNote(channel1, 67, 100, RiriObject.beatsToMils(1));
         chords[0].chordOn();
         break;
       case 'u':
@@ -380,3 +526,4 @@ void keyReleased() {
   }
   keyDown = false;
 }
+*/

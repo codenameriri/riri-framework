@@ -47,7 +47,9 @@ public class RiriSequence extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
-    super.start();
+    if (!running) {
+      super.start();
+    }
   }
 
   /*
@@ -128,6 +130,10 @@ public class RiriSequence extends RiriObject {
   */
   public void addChord(RiriChord chord) {
     notes.add(chord);
+  }
+
+  public void clear() {
+    notes = new ArrayList<RiriObject>();
   }
   
   /*

@@ -27,9 +27,11 @@ public class RiriObject extends Thread {
   * start() - Start executing the thread
   */
   public void start() {
-    running = true;
-    counter = 0;
-    super.start();
+    if (!running) {
+      running = true;
+      counter = 0;
+      super.start();
+    }
   }
 
   /*
@@ -58,6 +60,7 @@ public class RiriObject extends Thread {
   public void quit() {
     running = false;
     counter = 0;
+    interrupt();
   }
 
   /*
