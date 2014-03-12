@@ -1,12 +1,12 @@
 /*
-*	RiriObject
+* RiriObject
 *
-*	Base class for Notes, Rests, and Chords
+* Base class for Notes, Rests, and Chords
 */
 
 public class RiriObject extends Thread {
 
-  // Thread properties	
+  // Thread properties  
   protected boolean running = false;
   protected int counter = 0;
 
@@ -27,9 +27,11 @@ public class RiriObject extends Thread {
   * start() - Start executing the thread
   */
   public void start() {
-    running = true;
-    counter = 0;
-    super.start();
+    if (!running) {
+      running = true;
+      counter = 0;
+      super.start();
+    }
   }
 
   /*
@@ -56,8 +58,22 @@ public class RiriObject extends Thread {
   * quit() - Stop executing the thread
   */
   public void quit() {
-    running = false;
-    counter = 0;
+    if (running) {
+      running = false;
+      counter = 0;
+      interrupt();
+    }
+  }
+
+  /*
+  * clone() - Create a copy of the RiriObject
+  */
+  public RiriObject clone() {
+    RiriObject clone = new RiriObject();
+    clone.duration(this.duration);
+    clone.repeats(this.repeats);
+    clone.infinite(this.infinite);
+    return clone;
   }
 
   /*
@@ -92,7 +108,11 @@ public class RiriObject extends Thread {
   }
 
   public String type() {
-  	return this.getClass().getSimpleName();
+    return this.getClass().getSimpleName();
+  }
+
+  public String toString() {
+    return "";
   }
 
 }

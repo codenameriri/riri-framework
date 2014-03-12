@@ -1,22 +1,23 @@
 /*
-*	RiriSequence
+* RiriSequence
 *
-*	Encapsulates values and operations for playing a sequence of MIDI notes
+* Encapsulates values and operations for playing a sequence of MIDI notes
 */
 
 public class RiriSequence extends RiriObject {
-	
+  
   /*
-  *	Instance Variables
+  * Instance Variables
   */
   
   // List of RiriNotes
   ArrayList<RiriObject> notes = null;
   
   /*
-  *	Default Constructor
+  * Default Constructor
   */
   public RiriSequence() {
+    super();
     notes = new ArrayList<RiriObject>();
   }
 
@@ -25,15 +26,17 @@ public class RiriSequence extends RiriObject {
   * @param ArrayList<RiriNote> aNotes - List of RiriNotes to start with
   */
   public RiriSequence(ArrayList<RiriObject> aNotes) {
+    super();
     notes = aNotes;
   }
   
   /*
-  *	Constructor
+  * Constructor
   * @param ArrayList<RiriNote> aNotes - List of RiriNotes to start with
-  * @param int aInterval - Interval between all notes in the sequence 	
+  * @param int aInterval - Interval between all notes in the sequence   
   */
   public RiriSequence(ArrayList<RiriObject> aNotes, int aInterval) {
+    super();
     notes = aNotes;
     for (int i = 0; i < notes.size(); i++) {
       notes.get(i).duration(aInterval);
@@ -44,7 +47,7 @@ public class RiriSequence extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
-    super.start();
+      super.start();
   }
 
   /*
@@ -52,30 +55,52 @@ public class RiriSequence extends RiriObject {
   */
   public void run() {
     // Loop through each note in the sequence
-    while(running && counter < notes.size()) {
-      // Grab and play the current note in the sequence
-      RiriObject currentNote = notes.get(counter);
-      int wait = currentNote.duration() * currentNote.repeats();
-      currentNote.start();
-      // Sleep for the duration of the note
-      try {
-        //sleep((long) currentNote.duration());
-        sleep((long) wait);
-      } catch (Exception e) {
-        println("iunno...");
+    while(running && counter < repeats) {
+      int c = 0;
+      while (c < notes.size()) {
+        // Grab and play the current note in the sequence
+        RiriObject currentNote = notes.get(c).clone();
+        int wait = currentNote.duration() * currentNote.repeats();
+        currentNote.start();
+        // Sleep for the duration of the note
+        try {
+          //sleep((long) currentNote.duration());
+          sleep((long) wait);
+        } catch (Exception e) {
+          println("iunno...");
+        }
+        c++;
       }
-      counter++;
+      if (!infinite) {
+        counter++;
+      }
     }
     // If we're out of notes, stop executing
     running = false;
     counter = 0;
+    println("Done");
+  }
+
+  /*
+  * clone() - Create a copy of the RiriSequence
+  */
+  public RiriObject clone() {
+    RiriSequence clone = new RiriSequence();
+    clone.duration(this.duration);
+    clone.repeats(this.repeats);
+    clone.infinite(this.infinite);
+    clone.notes = new ArrayList<RiriObject>();
+    for (int i = 0; i < this.notes.size(); i++) {
+      clone.notes.add(this.notes.get(i).clone());
+    }
+    return clone;
   }
 
   /*
   * quit() - Stop executing the thread
   */
   public void quit() {
-    super.quit();
+      super.quit();
   }
   
   /*
@@ -119,11 +144,18 @@ public class RiriSequence extends RiriObject {
   }
 
   /*
-  * addChord - Add a chord
+  * addChord() - Add a chord
   * @param RiriChord chord - The RiriChord to add to the sequence
   */
   public void addChord(RiriChord chord) {
     notes.add(chord);
+  }
+
+  /*
+  * clear() - Empty the sequence
+  */
+  public void clear() {
+    notes = new ArrayList<RiriObject>();
   }
   
   /*
@@ -144,8 +176,12 @@ public class RiriSequence extends RiriObject {
     return counter;
   }
 
-  public void position(int i) {
-    counter = i;
+  public int duration() {
+    int d = 0;
+    for (int i = 0; i < notes.size(); i++) {
+      d += notes.get(i).duration() * notes.get(i).repeats();
+    }
+    return d;
   }
 
 }
