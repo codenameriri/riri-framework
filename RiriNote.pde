@@ -1,13 +1,13 @@
 /*
-*	RiriNote
+* RiriNote
 *
-*	Encapsulates values and operations for playing a MIDI note
+* Encapsulates values and operations for playing a MIDI note
 */
 
 public class RiriNote extends RiriObject {
-	
+  
   /*
-  *	Instance Variables
+  * Instance Variables
   */
   
   // GLOBALS
@@ -19,17 +19,17 @@ public class RiriNote extends RiriObject {
   protected int velocity = 0;
   
   /*
-  *	Default Constructor	
+  * Default Constructor 
   */
   public RiriNote() {
 
   }
   
   /*
-  *	Constructor
-  *	@param int aChannel = the channel the note should be played on (0-15)
-  *	@param int aPitch = the pitch of the note (0-127)
-  *	@param int aVelocity = the velocity of the note (0-127)
+  * Constructor
+  * @param int aChannel = the channel the note should be played on (0-15)
+  * @param int aPitch = the pitch of the note (0-127)
+  * @param int aVelocity = the velocity of the note (0-127)
   */
   public RiriNote(int aChannel, int aPitch, int aVelocity) {
     super();
@@ -42,11 +42,11 @@ public class RiriNote extends RiriObject {
   }
   
   /*
-  *	Constructor
-  *	@param int aChannel = the channel the note should be played on (0-15)
-  *	@param int aPitch = the pitch of the note (0-127)
-  *	@param int aVelocity = the velocity of the note (0-127)
-  *	@param int aDuration = the duration of the note (in milliseconds)
+  * Constructor
+  * @param int aChannel = the channel the note should be played on (0-15)
+  * @param int aPitch = the pitch of the note (0-127)
+  * @param int aVelocity = the velocity of the note (0-127)
+  * @param int aDuration = the duration of the note (in milliseconds)
   */
   public RiriNote(int aChannel, int aPitch, int aVelocity, int aDuration) {
     super();
@@ -99,9 +99,7 @@ public class RiriNote extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
-    if (!running) {
       super.start();
-    }
   }
 
   /*
@@ -136,7 +134,7 @@ public class RiriNote extends RiriObject {
   }
 
   /*
-  *	noteOn() - Start playing the note
+  * noteOn() - Start playing the note
   */
   public void noteOn() {
     if (!playing) {
@@ -150,7 +148,7 @@ public class RiriNote extends RiriObject {
   }
 
   /*
-  *	noteOff() - Stop playing a note
+  * noteOff() - Stop playing a note
   */
   public void noteOff() {
     if (playing) {
@@ -164,10 +162,24 @@ public class RiriNote extends RiriObject {
   }
 
   /*
-  *	Getters/Setters
+  * clone() - Create a copy of the RiriNote
+  */
+  public RiriObject clone() {
+    RiriNote clone = new RiriNote();
+    clone.duration(this.duration);
+    clone.repeats(this.repeats);
+    clone.infinite(this.infinite);
+    clone.channel(this.channel);
+    clone.pitch(this.pitch);
+    clone.velocity(this.pitch);
+    return clone;
+  }
+
+  /*
+  * Getters/Setters
   *
-  *	Getters take no parameters, returns the value of the property
-  *	Setters take one parameter, the new value of the property
+  * Getters take no parameters, returns the value of the property
+  * Setters take one parameter, the new value of the property
   */
   public int channel() {
     return channel;

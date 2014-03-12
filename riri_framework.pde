@@ -21,7 +21,7 @@ float potVal = 0;
 
 // MidiBus
 MidiBus mb;
-String MIDI_PORT_OUT = "Virtual MIDI Bus";
+String MIDI_PORT_OUT = "Virtual MIDI Bus";  
 int channel1 = 0;
 int channel2 = 1;
 int channel3 = 2;

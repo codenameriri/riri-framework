@@ -1,13 +1,13 @@
 /*
-*	RiriChord
+* RiriChord
 *
-*	Encapsulates values and operations for playing several simultaneous MIDI notes
+* Encapsulates values and operations for playing several simultaneous MIDI notes
 */
 
 public class RiriChord extends RiriObject {
 
   /*
-  *	Instance Variables
+  * Instance Variables
   */
 
   // GLOBALS
@@ -24,7 +24,7 @@ public class RiriChord extends RiriObject {
   */
   public RiriChord() {
     super();
-  	notes = new ArrayList<RiriNote>();
+    notes = new ArrayList<RiriNote>();
     running = false;
     counter = 0;
   }
@@ -33,9 +33,7 @@ public class RiriChord extends RiriObject {
   * start() - Start executing the thread
   */
   public void start() {
-    if (!running) {
       super.start();
-    }
   }
 
   /*
@@ -45,8 +43,8 @@ public class RiriChord extends RiriObject {
     while (running && counter < repeats) {
       // Play the notes in the chord
       for (int i = 0; i < notes.size(); i++) {
-      	//notes.get(i).noteOn();
-      	notes.get(i).start();
+        //notes.get(i).noteOn();
+        notes.get(i).start();
       }
       // Sleep for the chord's duration
       try {
@@ -56,7 +54,7 @@ public class RiriChord extends RiriObject {
       }
       // Stop the notes in the chord
       /*for (int i = 0; i < notes.size(); i++) {
-      	//notes.get(i).noteOff();
+        //notes.get(i).noteOff();
       }*/
       counter++;
     }
@@ -68,6 +66,7 @@ public class RiriChord extends RiriObject {
   * quit() - Stop executing the thread
   */
   public void quit() {
+    chordOff();
     super.quit();
   }
 
@@ -76,7 +75,7 @@ public class RiriChord extends RiriObject {
   * @param RiriNote note - The RiriNote to add to the sequence
   */
   public void addNote(RiriNote note) {
-  	note.infinite(false);
+    note.infinite(false);
     notes.add(note);
     setChordDuration();
   }
@@ -142,16 +141,45 @@ public class RiriChord extends RiriObject {
   * setChordDuration() - Determine the duration of the chord
   */
   public void setChordDuration() {
-  	int longest = 0;
+    int longest = 0;
     // Find the longest note duration (considering repeats)
-  	for (int i = 0; i < notes.size(); i++) {
-  		int current = notes.get(i).duration() * notes.get(i).repeats();
-  		if (current > longest) {
-  			longest = current;
-  		}
-  	}
+    for (int i = 0; i < notes.size(); i++) {
+      int current = notes.get(i).duration() * notes.get(i).repeats();
+      if (current > longest) {
+        longest = current;
+      }
+    }
     // Set the chord's duration to the duration of the longest note
-  	duration(longest);
+    duration(longest);
+  }
+
+  /*
+  * clone() - Create a copy of the RiriChord
+  */
+  public RiriObject clone() {
+    RiriChord clone = new RiriChord();
+    clone.duration(this.duration);
+    clone.repeats(this.repeats);
+    clone.infinite(this.infinite);
+    clone.notes = new ArrayList<RiriNote>();
+    for (int i = 0; i < this.notes.size(); i++) {
+      clone.notes.add((RiriNote) this.notes.get(i).clone());
+    }
+    return clone;
+  }
+
+  /*
+  * Getters/Setters
+  *
+  * Getters take no parameters, returns the value of the property
+  * Setters take one parameter, the new value of the property
+  */
+  public ArrayList<RiriNote> notes() {
+    return notes;
+  }
+
+  public void notes(ArrayList<RiriNote> n) {
+    notes = n;
   }
 
   public String toString() {
