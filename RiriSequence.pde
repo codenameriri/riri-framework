@@ -67,7 +67,7 @@ public class RiriSequence extends RiriObject {
           //sleep((long) currentNote.duration());
           sleep((long) wait);
         } catch (Exception e) {
-          println("iunno...");
+          println("Problem sleeping thread...");
           println(e.getMessage());
         }
         c++;
@@ -101,6 +101,7 @@ public class RiriSequence extends RiriObject {
   * quit() - Stop executing the thread
   */
   public void quit() {
+      notes = new ArrayList<RiriObject>();
       super.quit();
   }
   

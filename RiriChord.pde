@@ -50,7 +50,7 @@ public class RiriChord extends RiriObject {
       try {
         sleep((long) duration);
       } catch (Exception e) {
-        println("iunno...");
+        println("Problem sleeping thread...");
         println(e.getMessage());
       }
       // Stop the notes in the chord
@@ -68,6 +68,7 @@ public class RiriChord extends RiriObject {
   */
   public void quit() {
     chordOff();
+    notes = new ArrayList<RiriNote>();
     super.quit();
   }
 

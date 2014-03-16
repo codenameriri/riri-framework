@@ -49,7 +49,7 @@ public class RiriObject extends Thread {
       try {
         sleep((long) duration);
       } catch (Exception e) {
-        println("iunno...");
+        println("Problem sleeping thread...");
         println(e.getMessage());
       }
       // Increment the counter
