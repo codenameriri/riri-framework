@@ -68,6 +68,7 @@ public class RiriSequence extends RiriObject {
           sleep((long) wait);
         } catch (Exception e) {
           println("iunno...");
+          println(e.getMessage());
         }
         c++;
       }

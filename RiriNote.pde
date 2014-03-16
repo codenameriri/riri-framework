@@ -114,6 +114,7 @@ public class RiriNote extends RiriObject {
         sleep((long) duration);
       } catch (Exception e) {
         println("iunno...");
+        println(e.getMessage());
       }
       // Send a note off event and quit executing
       noteOff();

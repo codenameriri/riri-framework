@@ -30,7 +30,13 @@ public class RiriObject extends Thread {
     if (!running) {
       running = true;
       counter = 0;
-      super.start();
+      try {
+        super.start();
+      }
+      catch (IllegalThreadStateException e) {
+        println("Problem starting thread...");
+        println(e.getMessage());
+      }
     }
   }
 
@@ -44,6 +50,7 @@ public class RiriObject extends Thread {
         sleep((long) duration);
       } catch (Exception e) {
         println("iunno...");
+        println(e.getMessage());
       }
       // Increment the counter
       if (!infinite) {
