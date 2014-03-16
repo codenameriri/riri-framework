@@ -51,6 +51,7 @@ public class RiriChord extends RiriObject {
         sleep((long) duration);
       } catch (Exception e) {
         println("iunno...");
+        println(e.getMessage());
       }
       // Stop the notes in the chord
       /*for (int i = 0; i < notes.size(); i++) {
