@@ -47,9 +47,11 @@ public class RiriObject extends Thread {
     while (running && counter < repeats) {
       // Sleep for the note's duration
       try {
-        sleep((long) duration);
+        long millis = round(duration/1000);
+        int nanos = Integer.parseInt(String.valueOf(duration).substring(String.valueOf(duration).length() -3));
+        sleep(millis, nanos);
       } catch (Exception e) {
-        println("iunno...");
+        println("Problem sleeping thread...");
         println(e.getMessage());
       }
       // Increment the counter

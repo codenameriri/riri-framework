@@ -111,9 +111,11 @@ public class RiriNote extends RiriObject {
       noteOn();
       // Sleep for the note's duration
       try {
-        sleep((long) duration);
+        long millis = round(duration/1000);
+        int nanos = Integer.parseInt(String.valueOf(duration).substring(String.valueOf(duration).length() -3));
+        sleep(millis, nanos);
       } catch (Exception e) {
-        println("iunno...");
+        println("Problem sleeping thread...");
         println(e.getMessage());
       }
       // Send a note off event and quit executing
@@ -141,7 +143,7 @@ public class RiriNote extends RiriObject {
     if (!playing) {
       mb.sendNoteOn(channel, pitch, velocity);
       playing = true;
-      println("playing " + pitch);
+      //println("playing " + pitch + " on channel " + channel + " with velocity " + velocity + " and duration " + duration);
     }
     else {
       println("Note not played, already playing!");
@@ -155,7 +157,7 @@ public class RiriNote extends RiriObject {
     if (playing) {
       mb.sendNoteOff(channel, pitch, velocity);
       playing = false;
-      println("stopping " + pitch);
+      //println("stopping " + pitch);
     }
     else {
       println("Note not stopped, already stopped!");

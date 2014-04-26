@@ -63,10 +63,10 @@ public class RiriMessage {
   * send() - Send a MIDI message
   */
   public void send() {
-  	println("sending msg");
+  	//println("sending msg");
   	// If the channel isn't set, send a MIDI message
     if (channel < 0) {
-      println("midi msg");
+      //println("midi msg");
       if (data2 < 0) {
       	mb.sendMessage(status, data1);
       }
@@ -76,7 +76,7 @@ public class RiriMessage {
     }
     // If the channel is set, send a Channel message
     else {
-      println("channel msg");
+      //println("channel msg");
       mb.sendMessage(status, channel, data1, data2);
     }
   }
