@@ -11,7 +11,10 @@ public class RiriSequence extends RiriObject {
   */
   
   // List of RiriNotes
-  ArrayList<RiriObject> notes = null;
+  private ArrayList<RiriObject> notes = null;
+
+  // Channel to play notes on
+  private int channel;
   
   /*
   * Default Constructor
@@ -19,6 +22,17 @@ public class RiriSequence extends RiriObject {
   public RiriSequence() {
     super();
     notes = new ArrayList<RiriObject>();
+    channel = 0;
+  }
+
+  /*
+  * Constructor
+  * @param int aChannel - channel notes in the chord should be played on  
+  */
+  public RiriSequence(int aChannel) {
+    super();
+    notes = new ArrayList<RiriObject>();
+    channel = aChannel;
   }
 
   /*
@@ -28,19 +42,18 @@ public class RiriSequence extends RiriObject {
   public RiriSequence(ArrayList<RiriObject> aNotes) {
     super();
     notes = aNotes;
+    channel = 0;
   }
   
   /*
   * Constructor
   * @param ArrayList<RiriNote> aNotes - List of RiriNotes to start with
-  * @param int aInterval - Interval between all notes in the sequence   
+  * @param int aChannel - channel notes in the chord should be played on  
   */
-  public RiriSequence(ArrayList<RiriObject> aNotes, int aInterval) {
+  public RiriSequence(ArrayList<RiriObject> aNotes, int aChannel) {
     super();
     notes = aNotes;
-    for (int i = 0; i < notes.size(); i++) {
-      notes.get(i).duration(aInterval);
-    }
+    channel = aChannel;
   }
 
   /*
@@ -60,12 +73,13 @@ public class RiriSequence extends RiriObject {
       while (c < notes.size()) {
         // Grab and play the current note in the sequence
         RiriObject currentNote = notes.get(c).clone();
-        int wait = currentNote.duration() * currentNote.repeats();
+        long wait = currentNote.duration() * currentNote.repeats();
         currentNote.start();
         // Sleep for the duration of the note
         try {
-          //sleep((long) currentNote.duration());
-          sleep((long) wait);
+          long millis = round(wait/1000);
+          int nanos = Integer.parseInt(String.valueOf(wait).substring(String.valueOf(wait).length() -3));
+          sleep(millis, nanos);
         } catch (Exception e) {
           println("Problem sleeping thread...");
           println(e.getMessage());
@@ -112,6 +126,16 @@ public class RiriSequence extends RiriObject {
   public void addNote(RiriNote note) {
     notes.add(note);
   }
+
+  /*
+  * addNote() - Add a note
+  * @param int pitch - pitch of the note
+  * @param int velocity - velocity of the note 
+  * @param int duration - duration of the note (in milliseconds)
+  */
+  public void addNote(int pitch, int velocity, int duration) {
+    notes.add(new RiriNote(channel, pitch, velocity, duration)); 
+  }
   
   /*
   * addNote() - Add a note
@@ -136,6 +160,14 @@ public class RiriSequence extends RiriObject {
     notes.add(new RiriNote(channel, pitch, velocity, duration, repeats)); 
   }
   
+  /*
+  * addRest() - Add a note with no pitch/velocity
+  * @param int duration - duration of the note (in milliseconds)
+  */
+  public void addRest(int duration) {
+    notes.add(new RiriNote(channel, 0, 0, duration)); 
+  }
+
   /*
   * addRest() - Add a note with no pitch/velocity
   * @param int channel - channel the note should play on

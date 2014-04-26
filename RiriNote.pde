@@ -111,7 +111,9 @@ public class RiriNote extends RiriObject {
       noteOn();
       // Sleep for the note's duration
       try {
-        sleep((long) duration);
+        long millis = round(duration/1000);
+        int nanos = Integer.parseInt(String.valueOf(duration).substring(String.valueOf(duration).length() -3));
+        sleep(millis, nanos);
       } catch (Exception e) {
         println("Problem sleeping thread...");
         println(e.getMessage());

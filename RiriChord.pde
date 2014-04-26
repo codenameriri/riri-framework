@@ -19,12 +19,28 @@ public class RiriChord extends RiriObject {
   // Playing (for manual starting/stopping)
   private boolean playing = false;
 
+  // Channel notes should be played on
+  private int channel = 0;
+
   /*
   * Default Constructor
   */
   public RiriChord() {
     super();
     notes = new ArrayList<RiriNote>();
+    channel = 0;
+    running = false;
+    counter = 0;
+  }
+
+  /*
+  * Constructor
+  * @param int aChannel - channel notes in the chord should be played on
+  */
+  public RiriChord(int aChannel) {
+    super();
+    notes = new ArrayList<RiriNote>();
+    channel = aChannel;
     running = false;
     counter = 0;
   }
@@ -48,7 +64,9 @@ public class RiriChord extends RiriObject {
       }
       // Sleep for the chord's duration
       try {
-        sleep((long) duration);
+        long millis = round(duration/1000);
+        int nanos = Integer.parseInt(String.valueOf(duration).substring(String.valueOf(duration).length() -3));
+        sleep(millis, nanos);
       } catch (Exception e) {
         println("Problem sleeping thread...");
         println(e.getMessage());
@@ -82,6 +100,17 @@ public class RiriChord extends RiriObject {
     setChordDuration();
   }
   
+  /*
+  * addNote() - Add a note
+  * @param int pitch - pitch of the note
+  * @param int velocity - velocity of the note 
+  * @param int duration - duration of the note (in milliseconds)
+  */
+  public void addNote(int pitch, int velocity, int duration) {
+    notes.add(new RiriNote(channel, pitch, velocity, duration)); 
+    setChordDuration();
+  }
+
   /*
   * addNote() - Add a note
   * @param int channel - channel the note should play on

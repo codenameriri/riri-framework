@@ -94,7 +94,7 @@ void createSequence(int num, int channel, int startPitch, int startVel) {
 
 int beatsToMils(float beats){
   // (one second split into single beats) * # needed
-  float convertedNumber = (60000 / BPM) * beats;
+  float convertedNumber = (60000000 / BPM) * beats;
   return (int) convertedNumber;
 }
 
